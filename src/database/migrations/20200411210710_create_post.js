@@ -4,6 +4,7 @@ exports.up = function(knex) {
 
     table.string('title').notNullable();
     table.string('description').notNullable();
+    table.integer('likes');
 
     table.string('researcher_id').notNullable();
 

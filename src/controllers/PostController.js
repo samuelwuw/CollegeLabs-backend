@@ -58,6 +58,22 @@ module.exports = {
         return response.status(204).send();
     },
 
+    async updateLikes(request, response){
+        const { id } = request.params;
+        
+        const like = await connection('posts')
+        .where('id', id)
+        .select('likes')
+        .first();
+
+        const likes = like.likes + 1;
+
+        await connection('posts').where('id', id).update({
+            likes
+        });
+        return response.status(204).send();
+    },
+
     async delete(request, response){
         const { id } = request.params;
         const researcher_id = request.headers.authorization;

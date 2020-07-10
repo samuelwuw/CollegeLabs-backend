@@ -1,4 +1,6 @@
 const express = require('express');
+const multer = require('multer');
+const multerConfig = require('./config/multer');
 
 //validação
 const { celebrate, Segments, Joi } = require('celebrate');
@@ -6,6 +8,7 @@ const { celebrate, Segments, Joi } = require('celebrate');
 const ResearcherController = require('./controllers/ResearcherController');
 const CitizenController = require('./controllers/CitizenController');
 const PostController = require('./controllers/PostController');
+const PublicationController = require('./controllers/PublicationController');
 const ProfileController = require('./controllers/ProfileController');
 const SessionController = require('./controllers/SessionController');
 
@@ -58,7 +61,13 @@ routes.put('/researchers/:id', celebrate({
     })
 }), ResearcherController.update);
 
-routes.patch('/researchers/:id', ResearcherController.updateThemes);
+routes.patch('/researchers/:id', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        theme1: Joi.string().required(),
+        theme2: Joi.string().required(),
+        theme3: Joi.string().required(),
+    })
+}), ResearcherController.updateThemes);
 
 routes.get('/posts', celebrate({
     [Segments.QUERY]: Joi.object().keys({
@@ -88,6 +97,8 @@ routes.put('/posts/:id', celebrate({
     }).unknown(),    
 }), PostController.update);
 
+routes.patch('/posts/:id', PostController.updateLikes);
+
 
 routes.delete('/posts/:id',celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -106,13 +117,21 @@ routes.post('/citizens', celebrate({
     })
 }), CitizenController.create);
 
-routes.post('/citizens/:id', celebrate({
+routes.put('/citizens/:id', celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         password: Joi.string().required(),
         email: Joi.string().required().email()
     })
 }), CitizenController.update);
+
+routes.get('/publications', PublicationController.index)
+
+routes.post('/publications', multer(multerConfig).single("file"), celebrate({
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(),
+    }).unknown(),
+}), PublicationController.create);
 
 module.exports = routes;
 
