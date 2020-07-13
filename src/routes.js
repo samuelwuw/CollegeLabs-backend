@@ -21,12 +21,26 @@ routes.post('/sessions', celebrate({
     })
 }) ,SessionController.create);
 
+//----------------------------------------------------------------profile routes
 routes.get('/profile', celebrate({
     [Segments.HEADERS]: Joi.object({
         authorization: Joi.string().required(),
     }).unknown(),
 }), ProfileController.index);
 
+routes.get('/profileResearchers', celebrate({
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(),
+    }).unknown(),
+}), ProfileController.getResearcher);
+
+routes.get('/profilePublications', celebrate({
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(),
+    }).unknown(),
+}), ProfileController.getPublication);
+
+//------------------------------------------------------------researchers routes
 routes.get('/researchers', ResearcherController.index);
 
 routes.post('/researchers', celebrate({
@@ -69,6 +83,7 @@ routes.patch('/researchers/:id', celebrate({
     })
 }), ResearcherController.updateThemes);
 
+//------------------------------------------------------------------posts routes
 routes.get('/posts', celebrate({
     [Segments.QUERY]: Joi.object().keys({
         page: Joi.number(),
@@ -99,6 +114,7 @@ routes.put('/posts/:id', celebrate({
 
 routes.patch('/posts/:id', PostController.updateLikes);
 
+routes.patch('/postsUnlikes/:id', PostController.updateUnlikes);
 
 routes.delete('/posts/:id',celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -106,14 +122,18 @@ routes.delete('/posts/:id',celebrate({
     })
 }), PostController.delete);
 
-
+//---------------------------------------------------------------citizens routes
 routes.get('/citizens', CitizenController.index);
 
 routes.post('/citizens', celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         password: Joi.string().required(),
+        identity: Joi.string().required(),
+        birthdate: Joi.string().required(),
+        graduation: Joi.string().required(), 
         email: Joi.string().required().email()
+
     })
 }), CitizenController.create);
 
@@ -121,17 +141,67 @@ routes.put('/citizens/:id', celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         password: Joi.string().required(),
+        identity: Joi.string().required(),
+        birthdate: Joi.string().required(),
+        graduation: Joi.string().required(), 
         email: Joi.string().required().email()
     })
 }), CitizenController.update);
 
-routes.get('/publications', PublicationController.index)
+//-----------------------------------------------------------publications routes
+routes.get('/publications', celebrate({
+    [Segments.QUERY]: Joi.object().keys({
+        page: Joi.number(),
+    })
+}), PublicationController.index)
 
-routes.post('/publications', multer(multerConfig).single("file"), celebrate({
+routes.post('/publications', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        title: Joi.string().required(),
+        local: Joi.string().required(),
+        year: Joi.number().required(),
+        abstract: Joi.string().required(),
+        tags: Joi.string(),
+        url: Joi.string(),
+    }),
     [Segments.HEADERS]: Joi.object({
         authorization: Joi.string().required(),
-    }).unknown(),
+    }).unknown(), 
 }), PublicationController.create);
+
+
+routes.put('/publications/:id', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        title: Joi.string().required(),
+        local: Joi.string().required(),
+        year: Joi.number().required(),
+        abstract: Joi.string().required(),
+        tags: Joi.string(),
+        url: Joi.string(),
+        upload: Joi.boolean(),
+    }),
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(),
+    }).unknown(),    
+}),  PublicationController.update);
+
+routes.patch('/publications/:id', PublicationController.updateLikes);
+
+routes.patch('/publicationsUnlikes/:id', PublicationController.updateUnlikes);
+
+routes.patch('/publicationsFileName/:id',celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        filename: Joi.string().required(),
+    })
+}), PublicationController.updateFileName);
+
+routes.delete('/publications/:id',celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().required(),
+    })
+}), PublicationController.delete);
+
+routes.post('/publicationsFile', multer(multerConfig).single("file"), PublicationController.upload);
 
 module.exports = routes;
 

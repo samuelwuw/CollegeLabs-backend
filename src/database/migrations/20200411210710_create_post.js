@@ -8,7 +8,7 @@ exports.up = function(knex) {
 
     table.string('researcher_id').notNullable();
 
-    table.foreign('researcher_id').references('id').inTable('researcher');
+    table.foreign('researcher_id').references('id').inTable('researchers');
   });
 };
 
