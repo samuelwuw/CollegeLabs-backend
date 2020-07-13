@@ -11,6 +11,7 @@ const PostController = require('./controllers/PostController');
 const PublicationController = require('./controllers/PublicationController');
 const ProfileController = require('./controllers/ProfileController');
 const SessionController = require('./controllers/SessionController');
+const FollowController = require('./controllers/FollowController');
 
 const routes = express.Router();
 
@@ -202,6 +203,29 @@ routes.delete('/publications/:id',celebrate({
 }), PublicationController.delete);
 
 routes.post('/publicationsFile', multer(multerConfig).single("file"), PublicationController.upload);
+
+
+//----------------------------------------------------------------follows routes
+routes.get('/follows', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        id: Joi.string().required(), 
+    })
+}),FollowController.index);
+
+routes.post('/follows', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        follows: Joi.string().required(), 
+        follows_type: Joi.string().required(),
+        followed: Joi.string().required(), 
+        followed_type: Joi.string().required(),
+    })
+}), FollowController.create);
+
+routes.delete('/follows/:id',celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.string().required(), 
+    })
+}), FollowController.delete);
 
 module.exports = routes;
 

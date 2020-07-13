@@ -24,7 +24,11 @@ module.exports = {
           .limit(5)
           .offset((page - 1) * 5)
           .select([
-              'publications.*'
+              'publications.*',
+              'researchers.name',
+              'researchers.email',
+              'researchers.city',
+              'researchers.uf'
           ]);
 
       response.header('X-Total-Count', count['count(*)']);
