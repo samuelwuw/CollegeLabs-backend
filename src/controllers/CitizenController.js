@@ -28,11 +28,12 @@ module.exports = {
 
     async update(request, response){
         const { id } = request.params;
-        const  { name, password, email, identity, birthdate, graduation} = request.body;
+        const  { name, identity, password, email, birthdate, graduation } = request.body;
+        console.log(id);
 
         await connection('citizens').where('id', id).update({
             name, 
-            password, 
+            identity, 
             email,
             password, 
             birthdate, 

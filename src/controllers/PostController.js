@@ -16,7 +16,8 @@ module.exports = {
                 'researchers.name',
                 'researchers.email',
                 'researchers.city',
-                'researchers.uf'
+                'researchers.uf',
+                'researchers.theme1'
             ]);
 
         response.header('X-Total-Count', count['count(*)']);

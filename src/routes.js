@@ -6,6 +6,7 @@ const multerConfig = require('./config/multer');
 const { celebrate, Segments, Joi } = require('celebrate');
 
 const ResearcherController = require('./controllers/ResearcherController');
+const ThemeController = require('./controllers/ThemeController');
 const CitizenController = require('./controllers/CitizenController');
 const PostController = require('./controllers/PostController');
 const PublicationController = require('./controllers/PublicationController');
@@ -76,13 +77,16 @@ routes.put('/researchers/:id', celebrate({
     })
 }), ResearcherController.update);
 
-routes.patch('/researchers/:id', celebrate({
+//-----------------------------------------------------------------themes routes
+routes.get('/themes', ThemeController.index);
+
+routes.patch('/themes/:id', celebrate({
     [Segments.BODY]: Joi.object().keys({
         theme1: Joi.string().required(),
-        theme2: Joi.string().required(),
-        theme3: Joi.string().required(),
+        theme2: Joi.string(),
+        theme3: Joi.string(),
     })
-}), ResearcherController.updateThemes);
+}), ThemeController.update);
 
 //------------------------------------------------------------------posts routes
 routes.get('/posts', celebrate({

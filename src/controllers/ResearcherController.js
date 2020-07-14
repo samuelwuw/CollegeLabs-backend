@@ -43,15 +43,5 @@ module.exports = {
         });
 
         return response.status(204).send();
-    },
-    async updateThemes(request, response){
-        const { id } = request.params;
-        const  { theme1, theme2, theme3 } = request.body;
-
-        await connection('researchers').where('id', id).update({
-            theme1, theme2, theme3
-        });
-
-        return response.status(204).send();
     }
 };
